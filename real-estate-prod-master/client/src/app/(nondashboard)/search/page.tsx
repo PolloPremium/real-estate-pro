@@ -13,8 +13,7 @@ import Listings from "./Listings";
 import { useGetAuthUserQuery } from "@/state/api";
 
 const SearchPage = () => {
-  // Always call hooks at the top level
-  const { data: authUser, isLoading: isAuthLoading, error: authError } = useGetAuthUserQuery();
+  const { data: authUser, isLoading: isAuthLoading } = useGetAuthUserQuery();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const isFiltersFullOpen = useAppSelector(
@@ -31,7 +30,6 @@ const SearchPage = () => {
         } else {
           acc[key] = value === "any" ? null : value;
         }
-
         return acc;
       },
       {}
@@ -39,11 +37,9 @@ const SearchPage = () => {
 
     const cleanedFilters = cleanParams(initialFilters);
     dispatch(setFilters(cleanedFilters));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchParams, dispatch]);
 
-  // Only use conditional rendering, not conditional hooks
   if (isAuthLoading) return <div>Loading...</div>;
-  // If no user, still show the search
 
   return (
     <div
