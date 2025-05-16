@@ -10,10 +10,8 @@ import { cleanParams } from "@/lib/utils";
 import { setFilters } from "@/state";
 import Map from "./Map";
 import Listings from "./Listings";
-import { useGetAuthUserQuery } from "@/state/api";
 
 const SearchPage = () => {
-  const { data: authUser, isLoading: isAuthLoading } = useGetAuthUserQuery();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const isFiltersFullOpen = useAppSelector(
@@ -38,8 +36,6 @@ const SearchPage = () => {
     const cleanedFilters = cleanParams(initialFilters);
     dispatch(setFilters(cleanedFilters));
   }, [searchParams, dispatch]);
-
-  if (isAuthLoading) return <div>Loading...</div>;
 
   return (
     <div
