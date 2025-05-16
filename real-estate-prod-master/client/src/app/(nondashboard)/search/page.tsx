@@ -1,4 +1,3 @@
-
 "use client";
 
 import { NAVBAR_HEIGHT } from "@/lib/constants";
@@ -14,12 +13,8 @@ import Listings from "./Listings";
 import { useGetAuthUserQuery } from "@/state/api";
 
 const SearchPage = () => {
-  // Cambios aquí: manejo de autenticación
+  // Always call hooks at the top level
   const { data: authUser, isLoading: isAuthLoading, error: authError } = useGetAuthUserQuery();
-
-  if (isAuthLoading) return <div>Loading...</div>;
-  // Si no hay usuario, igual mostramos la búsqueda
-
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const isFiltersFullOpen = useAppSelector(
@@ -45,6 +40,10 @@ const SearchPage = () => {
     const cleanedFilters = cleanParams(initialFilters);
     dispatch(setFilters(cleanedFilters));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Only use conditional rendering, not conditional hooks
+  if (isAuthLoading) return <div>Loading...</div>;
+  // If no user, still show the search
 
   return (
     <div
