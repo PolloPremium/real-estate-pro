@@ -1,15 +1,24 @@
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - npm ci --legacy-peer-deps
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: out
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - node_modules/**/*
+version: 1
+applications:
+  - appRoot: real-estate-prod-master/client
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci --legacy-peer-deps --cache .npm --prefer-offline
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - .next/cache/**/*
+          - .npm/**/*
+    environment:
+      NEXT_PUBLIC_AWS_COGNITO_USER_POOL_ID: us-west-1_dSWqEkJy8
+      NEXT_PUBLIC_AWS_COGNITO_USER_POOL_CLIENT_ID: 9l88pgpiqb1duuhoplhrrdkq9
+      AWS_REGION: us-west-1
+      S3_BUCKET_NAME: real-estate-prod-bucket
