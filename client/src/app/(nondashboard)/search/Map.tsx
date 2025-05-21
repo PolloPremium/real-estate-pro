@@ -8,11 +8,8 @@ import { Property } from "@/types/prismaTypes";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
-const isValidLat = (lat: number) => typeof lat === "number" && lat >= -90 && lat <= 90;
-const isValidLng = (lng: number) => typeof lng === "number" && lng >= -180 && lng <= 180;
-
 const Map = () => {
-  const mapContainerRef = useRef(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const filters = useAppSelector((state) => state.global.filters);
   const {
     data: properties,
@@ -20,12 +17,10 @@ const Map = () => {
     isError,
   } = useGetPropertiesQuery(filters);
 
-  // Validar y corregir el centro del mapa
-  let [lng, lat] = filters.coordinates || [-74.5, 40];
-  if (!isValidLng(lng) || !isValidLat(lat)) {
-    lng = -74.5;
-    lat = 40;
-  }
+  // Add these logs to debug
+  console.log("Filters:", filters);
+  console.log("Properties:", properties, "Loading:", isLoading, "Error:", isError);
+
 
   useEffect(() => {
     if (isLoading || isError || !properties) return;
@@ -33,24 +28,25 @@ const Map = () => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current!,
       style: "mapbox://styles/gabriel324235542/cmapru5sf01dg01sp49gg6zu6",
-      center: [lng, lat],
+      center: filters.coordinates || [-74.5, 40],
       zoom: 9,
     });
 
-    properties.forEach((property) => {
-      const marker = createPropertyMarker(property, map);
-      const markerElement = marker.getElement();
-      const path = markerElement.querySelector("path[fill='#3FB1CE']");
-      if (path) path.setAttribute("fill", "#000000");
+    map.on("load", () => {
+      properties.forEach((property) => {
+        const marker = createPropertyMarker(property, map);
+        const markerElement = marker.getElement();
+        const path = markerElement.querySelector("path[fill='#3FB1CE']");
+        if (path) path.setAttribute("fill", "#000000");
+      });
+
+      setTimeout(() => {
+        map.resize();
+      }, 700);
     });
 
-    const resizeMap = () => {
-      if (map) setTimeout(() => map.resize(), 700);
-    };
-    resizeMap();
-
     return () => map.remove();
-  }, [isLoading, isError, properties, lng, lat]);
+  }, [isLoading, isError, properties, filters.coordinates]);
 
   if (isLoading) return <>Loading...</>;
   if (isError || !properties) return <div>Failed to fetch properties</div>;
@@ -70,13 +66,11 @@ const Map = () => {
 };
 
 const createPropertyMarker = (property: Property, map: mapboxgl.Map) => {
-  const longitude = property.location.coordinates.longitude;
-  const latitude = property.location.coordinates.latitude;
-
-  // Validar coordenadas del marcador
-  const isValid = isValidLng(longitude) && isValidLat(latitude);
   const marker = new mapboxgl.Marker()
-    .setLngLat(isValid ? [longitude, latitude] : [-74.5, 40])
+    .setLngLat([
+      property.location.coordinates.longitude,
+      property.location.coordinates.latitude,
+    ])
     .setPopup(
       new mapboxgl.Popup().setHTML(
         `
