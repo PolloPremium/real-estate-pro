@@ -23,16 +23,24 @@ const FiltersFull = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
+
+  // Obtener filtros globales del estado Redux
   const filters = useAppSelector((state) => state.global.filters);
+
+  // Estado local para manejar filtros dentro del formulario
   const [localFilters, setLocalFilters] = useState(initialState.filters);
+
+  // Estado para saber si el panel de filtros completos está abierto
   const isFiltersFullOpen = useAppSelector(
     (state) => state.global.isFiltersFullOpen
   );
 
+  // Función para actualizar la URL con filtros (con debounce para evitar muchos cambios rápidos)
   const updateURL = debounce((newFilters: FiltersState) => {
-    const cleanFilters = cleanParams(newFilters);
+    const cleanFilters = cleanParams(newFilters); // Quita filtros vacíos o irrelevantes
     const updatedSearchParams = new URLSearchParams();
 
+    // Convierte los filtros a query params, arrays se unen con comas
     Object.entries(cleanFilters).forEach(([key, value]) => {
       updatedSearchParams.set(
         key,
@@ -43,17 +51,20 @@ const FiltersFull = () => {
     router.push(`${pathname}?${updatedSearchParams.toString()}`);
   });
 
+  // Guardar los filtros en Redux y actualizar URL
   const handleSubmit = () => {
     dispatch(setFilters(localFilters));
     updateURL(localFilters);
   };
 
+  // Resetear filtros a estado inicial
   const handleReset = () => {
     setLocalFilters(initialState.filters);
     dispatch(setFilters(initialState.filters));
     updateURL(initialState.filters);
   };
 
+  // Cambiar amenidades en localFilters (agregar o quitar)
   const handleAmenityChange = (amenity: AmenityEnum) => {
     setLocalFilters((prev) => ({
       ...prev,
@@ -63,6 +74,7 @@ const FiltersFull = () => {
     }));
   };
 
+  // Buscar coordenadas de la ubicación usando la API de Mapbox
   const handleLocationSearch = async () => {
     try {
       const response = await fetch(
@@ -81,22 +93,23 @@ const FiltersFull = () => {
         }));
       }
     } catch (err) {
-      console.error("Error search location:", err);
+      console.error("Error buscando ubicación:", err);
     }
   };
 
+  // Si el panel de filtros no está abierto, no renderizar nada
   if (!isFiltersFullOpen) return null;
 
   return (
     <div className="bg-white rounded-lg px-4 h-full overflow-auto pb-10">
       <div className="flex flex-col space-y-6">
-        {/* Location */}
+        {/* Ubicación */}
         <div>
-          <h4 className="font-bold mb-2">Location</h4>
+          <h4 className="font-bold mb-2">Ubicación</h4>
           <div className="flex items-center">
             <Input
-              placeholder="Enter location"
-              value={filters.location}
+              placeholder="Ingrese ubicación"
+              value={localFilters.location}
               onChange={(e) =>
                 setLocalFilters((prev) => ({
                   ...prev,
@@ -114,9 +127,9 @@ const FiltersFull = () => {
           </div>
         </div>
 
-        {/* Property Type */}
+        {/* Tipo de propiedad */}
         <div>
-          <h4 className="font-bold mb-2">Property Type</h4>
+          <h4 className="font-bold mb-2">Tipo de propiedad</h4>
           <div className="grid grid-cols-2 gap-4">
             {Object.entries(PropertyTypeIcons).map(([type, Icon]) => (
               <div
@@ -141,9 +154,9 @@ const FiltersFull = () => {
           </div>
         </div>
 
-        {/* Price Range */}
+        {/* Rango de precio */}
         <div>
-          <h4 className="font-bold mb-2">Price Range (Monthly)</h4>
+          <h4 className="font-bold mb-2">Rango de precio (Mensual)</h4>
           <Slider
             min={0}
             max={10000}
@@ -165,10 +178,10 @@ const FiltersFull = () => {
           </div>
         </div>
 
-        {/* Beds and Baths */}
+        {/* Camas y baños */}
         <div className="flex gap-4">
           <div className="flex-1">
-            <h4 className="font-bold mb-2">Beds</h4>
+            <h4 className="font-bold mb-2">Camas</h4>
             <Select
               value={localFilters.beds || "any"}
               onValueChange={(value) =>
@@ -176,19 +189,19 @@ const FiltersFull = () => {
               }
             >
               <SelectTrigger className="w-full rounded-xl">
-                <SelectValue placeholder="Beds" />
+                <SelectValue placeholder="Camas" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any">Any beds</SelectItem>
-                <SelectItem value="1">1+ bed</SelectItem>
-                <SelectItem value="2">2+ beds</SelectItem>
-                <SelectItem value="3">3+ beds</SelectItem>
-                <SelectItem value="4">4+ beds</SelectItem>
+                <SelectItem value="any">Cualquier cantidad</SelectItem>
+                <SelectItem value="1">1 o más camas</SelectItem>
+                <SelectItem value="2">2 o más camas</SelectItem>
+                <SelectItem value="3">3 o más camas</SelectItem>
+                <SelectItem value="4">4 o más camas</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="flex-1">
-            <h4 className="font-bold mb-2">Baths</h4>
+            <h4 className="font-bold mb-2">Baños</h4>
             <Select
               value={localFilters.baths || "any"}
               onValueChange={(value) =>
@@ -196,21 +209,21 @@ const FiltersFull = () => {
               }
             >
               <SelectTrigger className="w-full rounded-xl">
-                <SelectValue placeholder="Baths" />
+                <SelectValue placeholder="Baños" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="any">Any baths</SelectItem>
-                <SelectItem value="1">1+ bath</SelectItem>
-                <SelectItem value="2">2+ baths</SelectItem>
-                <SelectItem value="3">3+ baths</SelectItem>
+                <SelectItem value="any">Cualquier cantidad</SelectItem>
+                <SelectItem value="1">1 o más baños</SelectItem>
+                <SelectItem value="2">2 o más baños</SelectItem>
+                <SelectItem value="3">3 o más baños</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/* Square Feet */}
+        {/* Metros cuadrados */}
         <div>
-          <h4 className="font-bold mb-2">Square Feet</h4>
+          <h4 className="font-bold mb-2">Metros cuadrados</h4>
           <Slider
             min={0}
             max={5000}
@@ -228,14 +241,14 @@ const FiltersFull = () => {
             className="[&>.bar]:bg-primary-700"
           />
           <div className="flex justify-between mt-2">
-            <span>{localFilters.squareFeet[0] ?? 0} sq ft</span>
-            <span>{localFilters.squareFeet[1] ?? 5000} sq ft</span>
+            <span>{localFilters.squareFeet[0] ?? 0} m²</span>
+            <span>{localFilters.squareFeet[1] ?? 5000} m²</span>
           </div>
         </div>
 
-        {/* Amenities */}
+        {/* Amenidades */}
         <div>
-          <h4 className="font-bold mb-2">Amenities</h4>
+          <h4 className="font-bold mb-2">Amenidades</h4>
           <div className="flex flex-wrap gap-2">
             {Object.entries(AmenityIcons).map(([amenity, Icon]) => (
               <div
@@ -257,9 +270,9 @@ const FiltersFull = () => {
           </div>
         </div>
 
-        {/* Available From */}
+        {/* Fecha disponible desde */}
         <div>
-          <h4 className="font-bold mb-2">Available From</h4>
+          <h4 className="font-bold mb-2">Disponible desde</h4>
           <Input
             type="date"
             value={
@@ -277,20 +290,20 @@ const FiltersFull = () => {
           />
         </div>
 
-        {/* Apply and Reset buttons */}
+        {/* Botones aplicar y resetear */}
         <div className="flex gap-4 mt-6">
           <Button
             onClick={handleSubmit}
             className="flex-1 bg-primary-700 text-white rounded-xl"
           >
-            APPLY
+            APLICAR
           </Button>
           <Button
             onClick={handleReset}
             variant="outline"
             className="flex-1 rounded-xl"
           >
-            Reset Filters
+            Restablecer filtros
           </Button>
         </div>
       </div>

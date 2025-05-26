@@ -12,16 +12,16 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
     isLoading,
   } = useGetPropertyQuery(propertyId);
 
-  if (isLoading) return <>Loading...</>;
+  if (isLoading) return <>Cargando detalles...</>;
   if (isError || !property) {
-    return <>Property not Found</>;
+    return <>Propiedad no encontrada</>;
   }
 
   return (
     <div className="mb-6">
-      {/* Amenities */}
+      {/* Amenidades */}
       <div>
-        <h2 className="text-xl font-semibold my-3">Property Amenities</h2>
+        <h2 className="text-xl font-semibold my-3">Amenidades de la propiedad</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {property.amenities.map((amenity: AmenityEnum) => {
             const Icon = AmenityIcons[amenity as AmenityEnum] || HelpCircle;
@@ -40,10 +40,10 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
         </div>
       </div>
 
-      {/* Highlights */}
+      {/* Destacados */}
       <div className="mt-12 mb-16">
         <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-100">
-          Highlights
+          Características destacadas
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-4 w-full">
           {property.highlights.map((highlight: HighlightEnum) => {
@@ -64,27 +64,27 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
         </div>
       </div>
 
-      {/* Tabs Section */}
+      {/* Sección de pestañas */}
       <div>
         <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-100 mb-5">
-          Fees and Policies
+          Tarifas y políticas
         </h3>
         <p className="text-sm text-primary-600 dark:text-primary-300 mt-2">
-          The fees below are based on community-supplied data and may exclude
-          additional fees and utilities.
+          Las tarifas mostradas se basan en datos proporcionados por la comunidad y pueden no incluir costos adicionales o servicios.
         </p>
         <Tabs defaultValue="required-fees" className="mt-8">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="required-fees">Required Fees</TabsTrigger>
-            <TabsTrigger value="pets">Pets</TabsTrigger>
-            <TabsTrigger value="parking">Parking</TabsTrigger>
+            <TabsTrigger value="required-fees">Tarifas requeridas</TabsTrigger>
+            <TabsTrigger value="pets">Mascotas</TabsTrigger>
+            <TabsTrigger value="parking">Estacionamiento</TabsTrigger>
           </TabsList>
+
           <TabsContent value="required-fees" className="w-1/3">
-            <p className="font-semibold mt-5 mb-2">One time move in fees</p>
+            <p className="font-semibold mt-5 mb-2">Tarifas únicas al mudarse</p>
             <hr />
             <div className="flex justify-between py-2 bg-secondary-50">
               <span className="text-primary-700 font-medium">
-                Application Fee
+                Tarifa de solicitud
               </span>
               <span className="text-primary-700">
                 ${property.applicationFee}
@@ -93,7 +93,7 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
             <hr />
             <div className="flex justify-between py-2 bg-secondary-50">
               <span className="text-primary-700 font-medium">
-                Security Deposit
+                Depósito de seguridad
               </span>
               <span className="text-primary-700">
                 ${property.securityDeposit}
@@ -101,15 +101,16 @@ const PropertyDetails = ({ propertyId }: PropertyDetailsProps) => {
             </div>
             <hr />
           </TabsContent>
+
           <TabsContent value="pets">
             <p className="font-semibold mt-5 mb-2">
-              Pets are {property.isPetsAllowed ? "allowed" : "not allowed"}
+              Las mascotas {property.isPetsAllowed ? "están permitidas" : "no están permitidas"}
             </p>
           </TabsContent>
+
           <TabsContent value="parking">
             <p className="font-semibold mt-5 mb-2">
-              Parking is{" "}
-              {property.isParkingIncluded ? "included" : "not included"}
+              El estacionamiento {property.isParkingIncluded ? "está incluido" : "no está incluido"}
             </p>
           </TabsContent>
         </Tabs>

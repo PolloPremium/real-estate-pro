@@ -84,7 +84,6 @@ export const getProperties = async (
       whereConditions.push(Prisma.sql`p.amenities @> ${amenitiesArray}`);
     }
 
-    // --- FIXED: Cast availableFrom to timestamp ---
     if (availableFrom && availableFrom !== "any") {
       const availableFromDate =
         typeof availableFrom === "string" ? availableFrom : null;
@@ -101,7 +100,6 @@ export const getProperties = async (
         }
       }
     }
-    // --- END FIX ---
 
     if (latitude && longitude) {
       const lat = parseFloat(latitude as string);
@@ -153,8 +151,6 @@ export const getProperties = async (
   }
 };
 
-// ...existing code for getProperty and createProperty...
-
 export const getProperty = async (
   req: Request,
   res: Response
@@ -196,6 +192,18 @@ export const getProperty = async (
   }
 };
 
+export const getPropertyLeases = async (req: Request, res: Response) => {
+  try {
+    const propertyId = Number(req.params.id);
+    const leases = await prisma.lease.findMany({
+      where: { propertyId },
+    });
+    res.json(leases);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching leases" });
+  }
+};
+
 export const createProperty = async (
   req: Request,
   res: Response
@@ -212,12 +220,13 @@ export const createProperty = async (
       ...propertyData
     } = req.body;
 
-    // Validación básica de campos requeridos
+    // Basic validation
     if (!address || !city || !state || !country || !postalCode || !managerCognitoId) {
-      console.error("Faltan campos requeridos:", { address, city, state, country, postalCode, managerCognitoId });
+      console.error("Missing required fields:", { address, city, state, country, postalCode, managerCognitoId });
       return res.status(400).json({ message: "Missing required fields." });
     }
 
+    // Upload photos to S3
     const photoUrls = await Promise.all(
       files.map(async (file) => {
         const uploadParams = {
@@ -232,7 +241,6 @@ export const createProperty = async (
           params: uploadParams,
         }).done();
 
-        // Puede que uploadResult.Location no exista, así que validamos
         if (!uploadResult || !("Location" in uploadResult)) {
           throw new Error("Error uploading photo to S3");
         }
@@ -242,6 +250,7 @@ export const createProperty = async (
       })
     );
 
+    // Geocode address
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
         street: address,
@@ -258,8 +267,8 @@ export const createProperty = async (
       },
     });
 
-    let longitude = 0;
-    let latitude = 0;
+    let longitude: number | null = null;
+    let latitude: number | null = null;
     if (
       Array.isArray(geocodingResponse.data) &&
       geocodingResponse.data.length > 0 &&
@@ -270,7 +279,20 @@ export const createProperty = async (
       latitude = parseFloat(geocodingResponse.data[0].lat);
     }
 
-    // create location
+    // Validate geocoding result
+    if (
+      longitude === null ||
+      latitude === null ||
+      longitude === 0 ||
+      latitude === 0
+    ) {
+      return res.status(400).json({
+        message:
+          "Could not geocode address. Please check the address fields or try a more specific address.",
+      });
+    }
+
+    // Create location
     const [location] = await prisma.$queryRaw<Location[]>`
       INSERT INTO "Location" (address, city, state, country, "postalCode", coordinates)
       VALUES (${address}, ${city}, ${state}, ${country}, ${postalCode}, ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326))
@@ -281,7 +303,7 @@ export const createProperty = async (
       throw new Error("Failed to create location in database.");
     }
 
-    // create property
+    // Create property
     const newProperty = await prisma.property.create({
       data: {
         ...propertyData,

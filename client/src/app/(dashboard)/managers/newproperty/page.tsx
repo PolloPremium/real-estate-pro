@@ -66,8 +66,10 @@ const NewProperty = () => {
   return (
     <div className="dashboard-container">
       <Header
-        title="Add New Property"
-        subtitle="Create a new property listing with detailed information"
+        // Título de la página
+        title="Agregar Nueva Propiedad"
+        // Subtítulo explicativo
+        subtitle="Crea una nueva propiedad con información detallada"
       />
       <div className="bg-white rounded-xl p-6">
         <Form {...form}>
@@ -75,14 +77,14 @@ const NewProperty = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="p-4 space-y-10"
           >
-            {/* Basic Information */}
+            {/* Información básica */}
             <div>
-              <h2 className="text-lg font-semibold mb-4">Basic Information</h2>
+              <h2 className="text-lg font-semibold mb-4">Información Básica</h2>
               <div className="space-y-4">
-                <CustomFormField name="name" label="Property Name" />
+                <CustomFormField name="name" label="Nombre de la Propiedad" />
                 <CustomFormField
                   name="description"
-                  label="Description"
+                  label="Descripción"
                   type="textarea"
                 />
               </div>
@@ -90,23 +92,23 @@ const NewProperty = () => {
 
             <hr className="my-6 border-gray-200" />
 
-            {/* Fees */}
+            {/* Tarifas */}
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold mb-4">Fees</h2>
+              <h2 className="text-lg font-semibold mb-4">Tarifas</h2>
               <CustomFormField
                 name="pricePerMonth"
-                label="Price per Month"
+                label="Precio por Mes"
                 type="number"
               />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <CustomFormField
                   name="securityDeposit"
-                  label="Security Deposit"
+                  label="Depósito de Seguridad"
                   type="number"
                 />
                 <CustomFormField
                   name="applicationFee"
-                  label="Application Fee"
+                  label="Cuota de Aplicación"
                   type="number"
                 />
               </div>
@@ -114,42 +116,42 @@ const NewProperty = () => {
 
             <hr className="my-6 border-gray-200" />
 
-            {/* Property Details */}
+            {/* Detalles de la propiedad */}
             <div className="space-y-6">
-              <h2 className="text-lg font-semibold mb-4">Property Details</h2>
+              <h2 className="text-lg font-semibold mb-4">Detalles de la Propiedad</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <CustomFormField
                   name="beds"
-                  label="Number of Beds"
+                  label="Número de Habitaciones"
                   type="number"
                 />
                 <CustomFormField
                   name="baths"
-                  label="Number of Baths"
+                  label="Número de Baños"
                   type="number"
                 />
                 <CustomFormField
                   name="squareFeet"
-                  label="Square Feet"
+                  label="Metros Cuadrados"
                   type="number"
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <CustomFormField
                   name="isPetsAllowed"
-                  label="Pets Allowed"
+                  label="Se Permiten Mascotas"
                   type="switch"
                 />
                 <CustomFormField
                   name="isParkingIncluded"
-                  label="Parking Included"
+                  label="Estacionamiento Incluido"
                   type="switch"
                 />
               </div>
               <div className="mt-4">
                 <CustomFormField
                   name="propertyType"
-                  label="Property Type"
+                  label="Tipo de Propiedad"
                   type="select"
                   options={Object.keys(PropertyTypeEnum).map((type) => ({
                     value: type,
@@ -161,15 +163,15 @@ const NewProperty = () => {
 
             <hr className="my-6 border-gray-200" />
 
-            {/* Amenities and Highlights */}
+            {/* Comodidades y destacados */}
             <div>
               <h2 className="text-lg font-semibold mb-4">
-                Amenities and Highlights
+                Comodidades y Destacados
               </h2>
               <div className="space-y-6">
                 <CustomFormField
                   name="amenities"
-                  label="Amenities"
+                  label="Comodidades"
                   type="select"
                   options={Object.keys(AmenityEnum).map((amenity) => ({
                     value: amenity,
@@ -178,7 +180,7 @@ const NewProperty = () => {
                 />
                 <CustomFormField
                   name="highlights"
-                  label="Highlights"
+                  label="Destacados"
                   type="select"
                   options={Object.keys(HighlightEnum).map((highlight) => ({
                     value: highlight,
@@ -190,12 +192,12 @@ const NewProperty = () => {
 
             <hr className="my-6 border-gray-200" />
 
-            {/* Photos */}
+            {/* Fotos */}
             <div>
-              <h2 className="text-lg font-semibold mb-4">Photos</h2>
+              <h2 className="text-lg font-semibold mb-4">Fotos</h2>
               <CustomFormField
                 name="photoUrls"
-                label="Property Photos"
+                label="Fotos de la Propiedad"
                 type="file"
                 accept="image/*"
               />
@@ -203,33 +205,33 @@ const NewProperty = () => {
 
             <hr className="my-6 border-gray-200" />
 
-            {/* Additional Information */}
+            {/* Información adicional */}
             <div className="space-y-6">
               <h2 className="text-lg font-semibold mb-4">
-                Additional Information
+                Información Adicional
               </h2>
-              <CustomFormField name="address" label="Address" />
+              <CustomFormField name="address" label="Dirección" />
               <div className="flex justify-between gap-4">
-                <CustomFormField name="city" label="City" className="w-full" />
+                <CustomFormField name="city" label="Ciudad" className="w-full" />
                 <CustomFormField
                   name="state"
-                  label="State"
+                  label="Estado/Provincia"
                   className="w-full"
                 />
                 <CustomFormField
                   name="postalCode"
-                  label="Postal Code"
+                  label="Código Postal"
                   className="w-full"
                 />
               </div>
-              <CustomFormField name="country" label="Country" />
+              <CustomFormField name="country" label="País" />
             </div>
 
             <Button
               type="submit"
               className="bg-primary-700 text-white w-full mt-8"
             >
-              Create Property
+              Crear Propiedad
             </Button>
           </form>
         </Form>

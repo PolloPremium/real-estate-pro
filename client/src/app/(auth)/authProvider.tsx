@@ -13,29 +13,29 @@ import {
 import "@aws-amplify/ui-react/styles.css";
 import { useRouter, usePathname } from "next/navigation";
 
-// https://docs.amplify.aws/gen1/javascript/tools/libraries/configure-categories/
+// Configuración de Amplify con datos desde variables de entorno
 Amplify.configure({
   Auth: {
     Cognito: {
       userPoolId: process.env.NEXT_PUBLIC_AWS_COGNITO_USER_POOL_ID!,
-      userPoolClientId:
-        process.env.NEXT_PUBLIC_AWS_COGNITO_USER_POOL_CLIENT_ID!,
+      userPoolClientId: process.env.NEXT_PUBLIC_AWS_COGNITO_USER_POOL_CLIENT_ID!,
     },
   },
 });
 
+// Componentes personalizados para el Authenticator
 const components = {
   Header() {
     return (
       <View className="mt-4 mb-7">
         <Heading level={3} className="!text-2xl !font-bold">
-          RENT
+         AMITYVILLE RENTER
           <span className="text-secondary-500 font-light hover:!text-primary-300">
             IFUL
           </span>
         </Heading>
         <p className="text-muted-foreground mt-2">
-          <span className="font-bold">Welcome!</span> Please sign in to continue
+          <span className="font-bold">¡Bienvenido!</span> Por favor, inicia sesión para continuar
         </p>
       </View>
     );
@@ -46,12 +46,12 @@ const components = {
       return (
         <View className="text-center mt-4">
           <p className="text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            ¿No tienes cuenta?{" "}
             <button
               onClick={toSignUp}
               className="text-primary hover:underline bg-transparent border-none p-0"
             >
-              Sign up here
+              Regístrate aquí
             </button>
           </p>
         </View>
@@ -66,14 +66,14 @@ const components = {
         <>
           <Authenticator.SignUp.FormFields />
           <RadioGroupField
-            legend="Role"
+            legend="Rol"
             name="custom:role"
             errorMessage={validationErrors?.["custom:role"]}
             hasError={!!validationErrors?.["custom:role"]}
             isRequired
           >
-            <Radio value="tenant">Tenant</Radio>
-            <Radio value="manager">Manager</Radio>
+            <Radio value="tenant">Inquilino</Radio>
+            <Radio value="manager">Administrador</Radio>
           </RadioGroupField>
         </>
       );
@@ -84,12 +84,12 @@ const components = {
       return (
         <View className="text-center mt-4">
           <p className="text-muted-foreground">
-            Already have an account?{" "}
+            ¿Ya tienes una cuenta?{" "}
             <button
               onClick={toSignIn}
               className="text-primary hover:underline bg-transparent border-none p-0"
             >
-              Sign in
+              Inicia sesión
             </button>
           </p>
         </View>
@@ -98,42 +98,43 @@ const components = {
   },
 };
 
+// Campos del formulario personalizados con placeholders y etiquetas en español
 const formFields = {
   signIn: {
     username: {
-      placeholder: "Enter your email",
-      label: "Email",
+      placeholder: "Ingresa tu correo electrónico",
+      label: "Correo electrónico",
       isRequired: true,
     },
     password: {
-      placeholder: "Enter your password",
-      label: "Password",
+      placeholder: "Ingresa tu contraseña",
+      label: "Contraseña",
       isRequired: true,
     },
   },
   signUp: {
     username: {
       order: 1,
-      placeholder: "Choose a username",
-      label: "Username",
+      placeholder: "Elige un nombre de usuario",
+      label: "Nombre de usuario",
       isRequired: true,
     },
     email: {
       order: 2,
-      placeholder: "Enter your email address",
-      label: "Email",
+      placeholder: "Ingresa tu correo electrónico",
+      label: "Correo electrónico",
       isRequired: true,
     },
     password: {
       order: 3,
-      placeholder: "Create a password",
-      label: "Password",
+      placeholder: "Crea una contraseña",
+      label: "Contraseña",
       isRequired: true,
     },
     confirm_password: {
       order: 4,
-      placeholder: "Confirm your password",
-      label: "Confirm Password",
+      placeholder: "Confirma tu contraseña",
+      label: "Confirmar contraseña",
       isRequired: true,
     },
   },
@@ -144,18 +145,20 @@ const Auth = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Definir si la ruta actual es una página de autenticación
   const isAuthPage = pathname.match(/^\/(signin|signup)$/);
+  // Definir si la ruta actual es dashboard para manager o tenant
   const isDashboardPage =
     pathname.startsWith("/manager") || pathname.startsWith("/tenants");
 
-  // Redirect authenticated users away from auth pages
+  // Redireccionar usuarios autenticados fuera de las páginas de login/signup
   useEffect(() => {
     if (user && isAuthPage) {
       router.push("/");
     }
   }, [user, isAuthPage, router]);
 
-  // Allow access to public pages without authentication
+  // Permitir acceso a páginas públicas sin autenticación
   if (!isAuthPage && !isDashboardPage) {
     return <>{children}</>;
   }

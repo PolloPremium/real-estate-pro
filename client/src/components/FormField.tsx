@@ -1,3 +1,6 @@
+// Este componente permite generar diferentes tipos de campos de formulario personalizados en función del tipo especificado.
+// Soporta campos de texto, correo, área de texto, número, selección, interruptor, archivo, múltiples entradas, y contraseña.
+
 import React from "react";
 import {
   ControllerRenderProps,
@@ -31,6 +34,7 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
+// Registramos los plugins de FilePond necesarios
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 interface FormFieldProps {
@@ -137,7 +141,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
               field.onChange(files);
             }}
             allowMultiple={true}
-            labelIdle={`Drag & Drop your images or <span class="filepond--label-action">Browse</span>`}
+            labelIdle={`Arrastra y suelta tus imágenes o <span class="filepond--label-action">Explora</span>`}
             credits={false}
           />
         );
@@ -189,7 +193,6 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
               <FormLabel className={`text-sm ${labelClassName}`}>
                 {label}
               </FormLabel>
-
               {!disabled &&
                 isIcon &&
                 type !== "file" &&
@@ -210,6 +213,8 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
     />
   );
 };
+
+// Componente para manejar campos con múltiples entradas dinámicas
 interface MultiInputFieldProps {
   name: string;
   control: any;
@@ -264,7 +269,7 @@ const MultiInputField: React.FC<MultiInputFieldProps> = ({
         className="mt-2 text-customgreys-dirtyGrey"
       >
         <Plus className="w-4 h-4 mr-2" />
-        Add Item
+        Agregar elemento
       </Button>
     </div>
   );

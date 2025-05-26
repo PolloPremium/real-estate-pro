@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Indica que este componente se ejecuta en el cliente
 
 import { NAVBAR_HEIGHT } from "@/lib/constants";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 import { useGetAuthUserQuery } from "@/state/api";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "aws-amplify/auth";
-import { Bell, MessageCircle, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react"; // Se eliminaron Bell y MessageCircle
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,13 +52,13 @@ const Navbar = () => {
             <div className="flex items-center gap-3">
               <Image
                 src="/logo.svg"
-                alt="Rentiful Logo"
+                alt="Logo de Rentiful"
                 width={24}
                 height={24}
                 className="w-6 h-6"
               />
               <div className="text-xl font-bold">
-                RENT
+                AMITYVILLE RENTER
                 <span className="text-secondary-500 font-light hover:!text-primary-300">
                   IFUL
                 </span>
@@ -80,36 +80,33 @@ const Navbar = () => {
               {authUser.userRole?.toLowerCase() === "manager" ? (
                 <>
                   <Plus className="h-4 w-4" />
-                  <span className="hidden md:block ml-2">Add New Property</span>
+                  <span className="hidden md:block ml-2">
+                    Agregar nueva propiedad
+                  </span>
                 </>
               ) : (
                 <>
                   <Search className="h-4 w-4" />
                   <span className="hidden md:block ml-2">
-                    Search Properties
+                    Buscar propiedades
                   </span>
                 </>
               )}
             </Button>
           )}
         </div>
+
+        {/* Texto informativo para usuarios no autenticados */}
         {!isDashboardPage && (
           <p className="text-primary-200 hidden md:block">
-            Discover your perfect rental apartment with our advanced search
+            Descubre tu apartamento ideal en alquiler con nuestra búsqueda avanzada
           </p>
         )}
+
         <div className="flex items-center gap-5">
           {authUser ? (
             <>
-              <div className="relative hidden md:block">
-                <MessageCircle className="w-6 h-6 cursor-pointer text-primary-200 hover:text-primary-400" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-secondary-700 rounded-full"></span>
-              </div>
-              <div className="relative hidden md:block">
-                <Bell className="w-6 h-6 cursor-pointer text-primary-200 hover:text-primary-400" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-secondary-700 rounded-full"></span>
-              </div>
-
+              {/* Menú desplegable del usuario */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-2 focus:outline-none">
                   <Avatar>
@@ -134,7 +131,7 @@ const Navbar = () => {
                       )
                     }
                   >
-                    Go to Dashboard
+                    Ir al panel
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-primary-200" />
                   <DropdownMenuItem
@@ -146,25 +143,26 @@ const Navbar = () => {
                       )
                     }
                   >
-                    Settings
+                    Configuración
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="cursor-pointer hover:!bg-primary-700 hover:!text-primary-100"
                     onClick={handleSignOut}
                   >
-                    Sign out
+                    Cerrar sesión
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
           ) : (
             <>
+              {/* Botones para iniciar sesión o registrarse */}
               <Link href="/signin">
                 <Button
                   variant="outline"
                   className="text-white border-white bg-transparent hover:bg-white hover:text-primary-700 rounded-lg"
                 >
-                  Sign In
+                  Iniciar sesión
                 </Button>
               </Link>
               <Link href="/signup">
@@ -172,7 +170,7 @@ const Navbar = () => {
                   variant="secondary"
                   className="text-white bg-secondary-600 hover:bg-white hover:text-primary-700 rounded-lg"
                 >
-                  Sign Up
+                  Registrarse
                 </Button>
               </Link>
             </>

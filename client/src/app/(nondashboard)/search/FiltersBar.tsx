@@ -1,4 +1,4 @@
-import {
+import { 
   FiltersState,
   setFilters,
   setViewMode,
@@ -33,6 +33,7 @@ const FiltersBar = () => {
   const viewMode = useAppSelector((state) => state.global.viewMode);
   const [searchInput, setSearchInput] = useState(filters.location);
 
+  // Actualiza la URL con los filtros limpiados y codificados, usando debounce para evitar llamadas excesivas
   const updateURL = debounce((newFilters: FiltersState) => {
     const cleanFilters = cleanParams(newFilters);
     const updatedSearchParams = new URLSearchParams();
@@ -47,6 +48,7 @@ const FiltersBar = () => {
     router.push(`${pathname}?${updatedSearchParams.toString()}`);
   });
 
+  // Maneja los cambios en los filtros y actualiza el estado y la URL
   const handleFilterChange = (
     key: string,
     value: any,
@@ -72,6 +74,7 @@ const FiltersBar = () => {
     updateURL(newFilters);
   };
 
+  // Busca la ubicación usando la API de Mapbox y actualiza filtros con la ubicación y coordenadas
   const handleLocationSearch = async () => {
     try {
       const response = await fetch(
@@ -92,15 +95,15 @@ const FiltersBar = () => {
         );
       }
     } catch (err) {
-      console.error("Error search location:", err);
+      console.error("Error buscando ubicación:", err);
     }
   };
 
   return (
     <div className="flex justify-between items-center w-full py-5">
-      {/* Filters */}
+      {/* Barra de filtros */}
       <div className="flex justify-between items-center gap-4 p-2">
-        {/* All Filters */}
+        {/* Botón para mostrar todos los filtros */}
         <Button
           variant="outline"
           className={cn(
@@ -110,13 +113,13 @@ const FiltersBar = () => {
           onClick={() => dispatch(toggleFiltersFullOpen())}
         >
           <Filter className="w-4 h-4" />
-          <span>All Filters</span>
+          <span>Todos los filtros</span>
         </Button>
 
-        {/* Search Location */}
+        {/* Búsqueda de ubicación */}
         <div className="flex items-center">
           <Input
-            placeholder="Search location"
+            placeholder="Buscar ubicación"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-40 rounded-l-xl rounded-r-none border-primary-400 border-r-0"
@@ -130,9 +133,9 @@ const FiltersBar = () => {
           </Button>
         </div>
 
-        {/* Price Range */}
+        {/* Rango de precios */}
         <div className="flex gap-1">
-          {/* Minimum Price Selector */}
+          {/* Selector de precio mínimo */}
           <Select
             value={filters.priceRange[0]?.toString() || "any"}
             onValueChange={(value) =>
@@ -145,7 +148,7 @@ const FiltersBar = () => {
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-white">
-              <SelectItem value="any">Any Min Price</SelectItem>
+              <SelectItem value="any">Cualquier precio mínimo</SelectItem>
               {[500, 1000, 1500, 2000, 3000, 5000, 10000].map((price) => (
                 <SelectItem key={price} value={price.toString()}>
                   ${price / 1000}k+
@@ -154,7 +157,7 @@ const FiltersBar = () => {
             </SelectContent>
           </Select>
 
-          {/* Maximum Price Selector */}
+          {/* Selector de precio máximo */}
           <Select
             value={filters.priceRange[1]?.toString() || "any"}
             onValueChange={(value) =>
@@ -167,7 +170,7 @@ const FiltersBar = () => {
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-white">
-              <SelectItem value="any">Any Max Price</SelectItem>
+              <SelectItem value="any">Cualquier precio máximo</SelectItem>
               {[1000, 2000, 3000, 5000, 10000].map((price) => (
                 <SelectItem key={price} value={price.toString()}>
                   &lt;${price / 1000}k
@@ -177,43 +180,43 @@ const FiltersBar = () => {
           </Select>
         </div>
 
-        {/* Beds and Baths */}
+        {/* Selección de número de camas y baños */}
         <div className="flex gap-1">
-          {/* Beds */}
+          {/* Selector de camas */}
           <Select
             value={filters.beds}
             onValueChange={(value) => handleFilterChange("beds", value, null)}
           >
             <SelectTrigger className="w-26 rounded-xl border-primary-400">
-              <SelectValue placeholder="Beds" />
+              <SelectValue placeholder="Camas" />
             </SelectTrigger>
             <SelectContent className="bg-white">
-              <SelectItem value="any">Any Beds</SelectItem>
-              <SelectItem value="1">1+ bed</SelectItem>
-              <SelectItem value="2">2+ beds</SelectItem>
-              <SelectItem value="3">3+ beds</SelectItem>
-              <SelectItem value="4">4+ beds</SelectItem>
+              <SelectItem value="any">Cualquier número de camas</SelectItem>
+              <SelectItem value="1">1+ cama</SelectItem>
+              <SelectItem value="2">2+ camas</SelectItem>
+              <SelectItem value="3">3+ camas</SelectItem>
+              <SelectItem value="4">4+ camas</SelectItem>
             </SelectContent>
           </Select>
 
-          {/* Baths */}
+          {/* Selector de baños */}
           <Select
             value={filters.baths}
             onValueChange={(value) => handleFilterChange("baths", value, null)}
           >
             <SelectTrigger className="w-26 rounded-xl border-primary-400">
-              <SelectValue placeholder="Baths" />
+              <SelectValue placeholder="Baños" />
             </SelectTrigger>
             <SelectContent className="bg-white">
-              <SelectItem value="any">Any Baths</SelectItem>
-              <SelectItem value="1">1+ bath</SelectItem>
-              <SelectItem value="2">2+ baths</SelectItem>
-              <SelectItem value="3">3+ baths</SelectItem>
+              <SelectItem value="any">Cualquier número de baños</SelectItem>
+              <SelectItem value="1">1+ baño</SelectItem>
+              <SelectItem value="2">2+ baños</SelectItem>
+              <SelectItem value="3">3+ baños</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Property Type */}
+        {/* Selector de tipo de propiedad */}
         <Select
           value={filters.propertyType || "any"}
           onValueChange={(value) =>
@@ -221,10 +224,10 @@ const FiltersBar = () => {
           }
         >
           <SelectTrigger className="w-32 rounded-xl border-primary-400">
-            <SelectValue placeholder="Home Type" />
+            <SelectValue placeholder="Tipo de propiedad" />
           </SelectTrigger>
           <SelectContent className="bg-white">
-            <SelectItem value="any">Any Property Type</SelectItem>
+            <SelectItem value="any">Cualquier tipo de propiedad</SelectItem>
             {Object.entries(PropertyTypeIcons).map(([type, Icon]) => (
               <SelectItem key={type} value={type}>
                 <div className="flex items-center">
@@ -237,7 +240,7 @@ const FiltersBar = () => {
         </Select>
       </div>
 
-      {/* View Mode */}
+      {/* Modo de vista: lista o cuadrícula */}
       <div className="flex justify-between items-center gap-4 p-2">
         <div className="flex border rounded-xl">
           <Button

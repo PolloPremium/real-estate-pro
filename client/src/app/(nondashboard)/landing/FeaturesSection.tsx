@@ -3,8 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 
+// Animación para el contenedor principal
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -17,6 +17,7 @@ const containerVariants = {
   },
 };
 
+// Animación para cada tarjeta individual
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
@@ -32,33 +33,30 @@ const FeaturesSection = () => {
       className="py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-white"
     >
       <div className="max-w-4xl xl:max-w-6xl mx-auto">
+        {/* Título de la sección */}
         <motion.h2
           variants={itemVariants}
           className="text-3xl font-bold text-center mb-12 w-full sm:w-2/3 mx-auto"
         >
-          Quickly find the home you want using our effective search filters!
+          ¡Encuentra rápidamente el hogar que deseas usando nuestros filtros de búsqueda efectivos!
         </motion.h2>
+
+        {/* Tarjetas de características */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
           {[0, 1, 2].map((index) => (
             <motion.div key={index} variants={itemVariants}>
               <FeatureCard
                 imageSrc={`/landing-search${3 - index}.png`}
-                title={
-                  [
-                    "Trustworthy and Verified Listings",
-                    "Browse Rental Listings with Ease",
-                    "Simplify Your Rental Search with Advanced",
-                  ][index]
-                }
-                description={
-                  [
-                    "Discover the best rental options with user reviews and ratings.",
-                    "Get access to user reviews and ratings for a better understanding of rental options.",
-                    "Find trustworthy and verified rental listings to ensure a hassle-free experience.",
-                  ][index]
-                }
-                linkText={["Explore", "Search", "Discover"][index]}
-                linkHref={["/explore", "/search", "/discover"][index]}
+                title={[
+                  "Listados confiables y verificados",
+                  "Explora listados de alquiler fácilmente",
+                  "Simplifica tu búsqueda con filtros avanzados",
+                ][index]}
+                description={[
+                  "Descubre las mejores opciones de alquiler con reseñas y valoraciones de usuarios.",
+                  "Accede a reseñas y valoraciones para conocer mejor las opciones de alquiler.",
+                  "Encuentra listados verificados para asegurar una experiencia sin complicaciones.",
+                ][index]}
               />
             </motion.div>
           ))}
@@ -68,20 +66,18 @@ const FeaturesSection = () => {
   );
 };
 
+// Componente de tarjeta sin botón
 const FeatureCard = ({
   imageSrc,
   title,
   description,
-  linkText,
-  linkHref,
 }: {
   imageSrc: string;
   title: string;
   description: string;
-  linkText: string;
-  linkHref: string;
 }) => (
   <div className="text-center">
+    {/* Imagen */}
     <div className="p-4 rounded-lg mb-4 flex items-center justify-center h-48">
       <Image
         src={imageSrc}
@@ -91,15 +87,10 @@ const FeatureCard = ({
         alt={title}
       />
     </div>
+
+    {/* Título y descripción */}
     <h3 className="text-xl font-semibold mb-2">{title}</h3>
     <p className="mb-4">{description}</p>
-    <Link
-      href={linkHref}
-      className="inline-block border border-gray-300 rounded px-4 py-2 hover:bg-gray-100"
-      scroll={false}
-    >
-      {linkText}
-    </Link>
   </div>
 );
 

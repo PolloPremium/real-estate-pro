@@ -11,6 +11,7 @@ const ApplicationCard = ({
     application.property.photoUrls?.[0] || "/placeholder.jpg"
   );
 
+  // Determinar el color según el estado de la aplicación
   const statusColor =
     application.status === "Approved"
       ? "bg-green-500"
@@ -18,13 +19,14 @@ const ApplicationCard = ({
       ? "bg-red-500"
       : "bg-yellow-500";
 
+  // Determinar si mostrar datos del inquilino o del administrador según el tipo de usuario
   const contactPerson =
     userType === "manager" ? application.tenant : application.manager;
 
   return (
     <div className="border rounded-xl overflow-hidden shadow-sm bg-white mb-4">
-      <div className="flex flex-col lg:flex-row  items-start lg:items-center justify-between px-6 md:px-4 py-6 gap-6 lg:gap-4">
-        {/* Property Info Section */}
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 md:px-4 py-6 gap-6 lg:gap-4">
+        {/* Sección de información de la propiedad */}
         <div className="flex flex-col lg:flex-row gap-5 w-full lg:w-auto">
           <Image
             src={imgSrc}
@@ -47,49 +49,53 @@ const ApplicationCard = ({
             </div>
             <div className="text-xl font-semibold">
               ${application.property.pricePerMonth}{" "}
-              <span className="text-sm font-normal">/ month</span>
+              <span className="text-sm font-normal">/ mes</span>
             </div>
           </div>
         </div>
 
-        {/* Divider - visible only on desktop */}
+        {/* Separador (visible solo en escritorio) */}
         <div className="hidden lg:block border-[0.5px] border-primary-200 h-48" />
 
-        {/* Status Section */}
+        {/* Sección de estado de la solicitud */}
         <div className="flex flex-col justify-between w-full lg:basis-2/12 lg:h-48 py-2 gap-3 lg:gap-0">
           <div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-500">Status:</span>
+              <span className="text-gray-500">Estado:</span>
               <span
                 className={`px-2 py-1 ${statusColor} text-white rounded-full text-sm`}
               >
-                {application.status}
+                {application.status === "Approved"
+                  ? "Aprobada"
+                  : application.status === "Denied"
+                  ? "Rechazada"
+                  : "Pendiente"}
               </span>
             </div>
             <hr className="mt-3" />
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Start Date:</span>{" "}
+            <span className="text-gray-500">Fecha de inicio:</span>{" "}
             {new Date(application.lease?.startDate).toLocaleDateString()}
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">End Date:</span>{" "}
+            <span className="text-gray-500">Fecha de término:</span>{" "}
             {new Date(application.lease?.endDate).toLocaleDateString()}
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Next Payment:</span>{" "}
+            <span className="text-gray-500">Próximo pago:</span>{" "}
             {new Date(application.lease?.nextPaymentDate).toLocaleDateString()}
           </div>
         </div>
 
-        {/* Divider - visible only on desktop */}
+        {/* Separador (visible solo en escritorio) */}
         <div className="hidden lg:block border-[0.5px] border-primary-200 h-48" />
 
-        {/* Contact Person Section */}
+        {/* Sección de contacto */}
         <div className="flex flex-col justify-start gap-5 w-full lg:basis-3/12 lg:h-48 py-2">
           <div>
             <div className="text-lg font-semibold">
-              {userType === "manager" ? "Tenant" : "Manager"}
+              {userType === "manager" ? "Inquilino" : "Administrador"}
             </div>
             <hr className="mt-3" />
           </div>

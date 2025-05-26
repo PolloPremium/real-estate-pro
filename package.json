@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "jspdf": "^3.0.1",
+    "react-hot-toast": "^2.5.2",
+    "react-select": "^5.10.1"
+  },
+  "devDependencies": {
+    "@types/react-select": "^5.0.0"
+  }
+}
